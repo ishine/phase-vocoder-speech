@@ -40,7 +40,7 @@ class SpeedEffect(BaseEffect):
         Raises:
             RuntimeError: If processing fails.
         """
-        speed_factor = kwargs.get('speed_factor', 1.0)  # default no speed change
+        speed_factor = kwargs.get('speed_factor', 5.0)  # default no speed change
 
         try:
             processed = librosa.effects.time_stretch(audio_data, rate=speed_factor)

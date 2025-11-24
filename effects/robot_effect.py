@@ -7,7 +7,8 @@ Provides an audio robotization effect as a subclass of BaseEffect.
 import numpy as np
 import scipy.signal
 
-from effects.base_effect import BaseEffect
+from .base_effect import BaseEffect
+
 
 
 class RobotEffect(BaseEffect):

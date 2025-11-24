@@ -40,7 +40,7 @@ class PitchEffect(BaseEffect):
         Raises:
             RuntimeError: If processing fails.
         """
-        n_steps = kwargs.get('n_steps', 0.0)  # default no pitch shift
+        n_steps = kwargs.get('n_steps', 10.0)  # default pitch shift by 2 half steps
 
         try:
             shifted_audio = librosa.effects.pitch_shift(
