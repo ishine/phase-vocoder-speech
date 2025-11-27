@@ -6,25 +6,18 @@ and visualize or download the processed audio.
 """
 
 import tempfile
-
 import streamlit as st
-
 from audio_processor import AudioProcessor
 from utils.visualization import (
     plot_audio_waveform,
     plot_spectrogram,
     plot_frequency_spectrum,
-    plot_comparison,
-    plot_spectrogram_comparison,
-    plot_frequency_spectrum_comparison,
     plot_comprehensive_comparison,
 )
 from utils.file_utils import save_uploaded_file, cleanup_temp_files
 import config
 
-
 st.set_page_config(page_title='Audio Vocoder', layout='wide')
-
 
 def select_effect_and_params(audio_processor):
     """
@@ -50,7 +43,6 @@ def select_effect_and_params(audio_processor):
     params = effect.get_parameter_widgets()
     return selected_effect, params
 
-
 def process_and_display_audio(audio_processor, context, params):
     """
     Process the audio using the selected effect and display results.
@@ -66,7 +58,7 @@ def process_and_display_audio(audio_processor, context, params):
         params (dict): Effect parameters.
 
     Returns:
-        tuple: (output_path, processed_audio, processed_sr)
+        str: output_path
     """
     st.subheader('Result')
 
@@ -87,7 +79,7 @@ def process_and_display_audio(audio_processor, context, params):
         context['sample_rate'],
         f"{effect_name} Effect"
     )
-    
+
     # Audio player
     st.audio(output_path)
 
@@ -100,8 +92,7 @@ def process_and_display_audio(audio_processor, context, params):
             mime='audio/wav',
         )
 
-    return output_path, processed_audio, processed_sr
-
+    return output_path
 
 def display_original_audio_analysis(original_audio, sample_rate):
     """
@@ -112,19 +103,18 @@ def display_original_audio_analysis(original_audio, sample_rate):
         sample_rate (int): Sample rate of the audio.
     """
     st.subheader('Original Signal Analysis')
-    
+
     # Create tabs for different visualizations
     tab1, tab2, tab3 = st.tabs(["Waveform", "Frequency Analysis", "Spectrogram"])
-    
+
     with tab1:
         plot_audio_waveform(original_audio, sample_rate, 'Original Waveform')
-    
+
     with tab2:
         plot_frequency_spectrum(original_audio, sample_rate, 'Original Frequency Spectrum')
-    
+
     with tab3:
         plot_spectrogram(original_audio, sample_rate, 'Original Spectrogram')
-
 
 def main():
     """
@@ -151,16 +141,12 @@ def main():
 
             # Display original audio analysis
             display_original_audio_analysis(original_audio, sample_rate)
-            
+
             # Audio player for original
             st.audio(input_path)
 
             # Effect selection
             selected_effect, params = select_effect_and_params(audio_processor)
-
-            # Add analysis options
-            st.subheader('Analysis Options')
-            show_comprehensive = st.checkbox('Show Comprehensive Analysis', value=True)
 
             if st.button('Apply Effect'):
                 with st.spinner('Processing...'):
@@ -172,12 +158,12 @@ def main():
                             'original_audio': original_audio,
                             'sample_rate': sample_rate,
                         }
-                        
+
                         # Process audio and get results
-                        output_path, processed_audio, processed_sr = process_and_display_audio(
+                        output_path = process_and_display_audio(
                             audio_processor, context, params
                         )
-                        
+
                         cleanup_temp_files([output_path])
                     except (IOError, ValueError) as ex:
                         st.error(f'Processing error: {str(ex)}')
@@ -185,7 +171,6 @@ def main():
             st.error(f'Error: {str(ex)}')
         finally:
             cleanup_temp_files([input_path])
-
 
 if __name__ == '__main__':
     main()
