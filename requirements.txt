@@ -4,5 +4,4 @@ numpy>=1.21.0
 scipy>=1.7.0
 matplotlib>=3.5.0
 soundfile>=0.10.0
-pydub>=0.25.0
 audioread>=3.0.0
